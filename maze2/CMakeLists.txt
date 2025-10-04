@@ -3,7 +3,7 @@
 #
 
 # 将源代码添加到此项目的可执行文件。
-add_executable (maze2 "src/main.cpp" "src/type.cpp")
+add_executable (maze2 "src/main.cpp"    "src/datatypes.cpp")
 include_directories(include)
 # 动态获取VS安装目录下的库路径（示例）
 target_link_libraries(maze2 PRIVATE ${EasyXa})
