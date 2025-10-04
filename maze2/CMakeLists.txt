@@ -1,0 +1,16 @@
+﻿# CMakeList.txt: maze2 的 CMake 项目，在此处包括源代码并定义
+# 项目特定的逻辑。
+#
+
+# 将源代码添加到此项目的可执行文件。
+add_executable (maze2 "src/main.cpp" "src/type.cpp")
+include_directories(include)
+# 动态获取VS安装目录下的库路径（示例）
+target_link_libraries(maze2 PRIVATE ${EasyXa})
+# 指定EasyX库文件（easyx.lib）的搜索目录
+target_link_directories(maze2 PRIVATE "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/VS/lib/x64")
+if (CMAKE_VERSION VERSION_GREATER 3.12)
+  set_property(TARGET maze2 PROPERTY CXX_STANDARD 20)
+endif()
+
+# TODO: 如有需要，请添加测试并安装目标。
