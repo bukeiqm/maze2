@@ -9,19 +9,14 @@ using std::string;
 
 typedef unsigned int COLOR;
 
+class object;
+
 struct position {
 	int x, y;
 	position(int x = 0,int y = 0):x(x),y(y){}
 	bool operator==(const position& other) const;
 	position& operator=(const position& other);
 	auto Offset(direction dir, int step = 1) -> const position& ;
-};
-
-struct message {
-	position pos;//,别忘了消息有坐标，可以设置颜色和大小
-	string text;
-	font msgType;
-	message(string s, position pos = { 0,0 }, font type = font::TEXT) :text(s), pos(pos), msgType(type) {};
 };
 
 class object {
@@ -52,6 +47,15 @@ public:
 	void SetSpeed(int newSpd);
 };
 
+class message : public object {
+public:
+	string text;
+	font msgType;
+public:
+	message(string s, position pos = { 0,0 }, font type = font::TEXT);
+public:
+	void Draw() override;
+};
 
 /*
 

@@ -47,7 +47,7 @@ void ui::AppendBar(string text, font type) {
 
 void ui::AddOptionsFromBars(int index) {
 	message msg = msgs[index];
-	cursor.AddOptions(msg.pos);
+	//cursor.AddOptions(msg.pos);
 }
 
 void ui::InitCursor() {

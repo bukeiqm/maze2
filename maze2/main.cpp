@@ -34,7 +34,7 @@ int main()
 
 	p1.SetPosition({ 40,20 });
 
-	
+	message msg("test", { 400,200 });
 
 	map realMap(map1);
 
@@ -68,6 +68,7 @@ int main()
 		cleardevice();
 		p1.Draw();
 		realMap.Draw(true);
+		msg.Draw();
 
 		FlushBatchDraw();
 	}

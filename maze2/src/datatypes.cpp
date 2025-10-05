@@ -56,3 +56,12 @@ void movable::SetDirection(direction newDir) {
 void movable::SetSpeed(int newSpeed) {
 	speed = newSpeed;
 }
+
+message::message(string s, position pos, font type) :object(pos), text(s), msgType(type) {
+
+}
+
+void message::Draw() {
+	const int x = pos.x, y = pos.y;
+	outtextxy(x, y, text.c_str());
+}

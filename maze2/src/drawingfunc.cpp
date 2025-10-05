@@ -40,6 +40,11 @@ ui InitUIp() {
 }
 
 void DrawUI(const ui& usr) {
+	
+}
+
+/*
+* DrawUI():
 	for (auto i : usr.GetTexts()) {
 		const message& msg = i;
 		const position& pos = i.pos;
@@ -51,4 +56,4 @@ void DrawUI(const ui& usr) {
 	const int& x = curPos.x, y = curPos.y;
 	setfillcolor(GREEN);
 	fillcircle(x - 20, y + 10, 5);
-}
+*/
