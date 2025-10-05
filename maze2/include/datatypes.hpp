@@ -1,5 +1,8 @@
+#pragma once
 #include<vector>
+#include<string>
 using std::vector;
+using std::string;
 
 class map;
 enum class direction;
@@ -7,7 +10,7 @@ enum class direction;
 struct position {
 	int x, y;
 	position(int x = 0,int y = 0):x(x),y(y){}
-	bool operator==(const position& other) { return x == other.x && y == other.y; }
+	bool operator==(const position& other)const { return x == other.x && y == other.y; }
 	const position& dev(direction dir, int step = 1);
 };
 
@@ -62,6 +65,7 @@ public:
 	bool IsPathway(position pos) const;
 	void SetDestination(int x, int y);
 	void SetDestination(position pos);
+	void InitMap();
 	const position& GetDestination() const { return destination; }
 	const vector<vector<int>>& MatTable() const { return mat; }
 };
@@ -75,3 +79,7 @@ public:
 	void DoDamageTo(player& player, int damage = 10) { player.health -= damage; }
 	bool ShouldExist() { return duration > 0; }
 };
+
+/*
+
+	*/

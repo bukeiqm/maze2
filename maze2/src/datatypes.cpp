@@ -35,8 +35,19 @@ bool player::AtDest(const map& M) {
 
 map::map(const vector<vector<int>> mat){
 	this->mat = mat;
-	m = mat[0].size();
-	n = mat.size();
+	m = mat.size();
+	n = mat[0].size();
+}
+
+void map::InitMap() {
+	for (int i = 0; i < n; i++) {
+		mat[0][i] = 1;
+		mat[m - 1][i] = 1;
+	}
+	for (int j = 0; j < m; j++) {
+		mat[j][0] = 1;
+		mat[j][n - 1] = 1;
+	}
 }
 
 bool map::IsPathway(int x, int y) const {
