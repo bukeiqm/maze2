@@ -29,6 +29,10 @@ bool player::IsJammed(const map& M) {
 	return !M.IsPathway(pos.dev(dir));
 }
 
+bool player::AtDest(const map& M) {
+	return pos == M.destination;
+}
+
 map::map(const vector<vector<int>> mat){
 	this->mat = mat;
 	m = mat[0].size();
@@ -41,4 +45,12 @@ bool map::IsPathway(int x, int y) const {
 
 bool map::IsPathway(position pos) const {
 	return IsPathway(pos.x, pos.y);
+}
+
+void map::SetDestination(int x, int y) {
+	destination.x = x, destination.y = y;
+}
+
+void map::SetDestination(position pos) {
+	destination = pos;
 }

@@ -44,12 +44,14 @@ public:
 	void Move();
 	void SetDirection(direction dir);
 	bool IsJammed(const map& map);
+	bool AtDest(const map& map);
 	int GetX() const { return pos.x; }
 	int GetY() const { return pos.y; }
 };
 
 class map {
 public:
+	position destination;
 	int m, n;
 	vector<vector<int>> mat;
 public:
@@ -58,7 +60,10 @@ public:
 public:
 	bool IsPathway(int x, int y) const;
 	bool IsPathway(position pos) const;
-	const vector<vector<int>>& MatTable() const { return mat; };
+	void SetDestination(int x, int y);
+	void SetDestination(position pos);
+	const position& GetDestination() const { return destination; }
+	const vector<vector<int>>& MatTable() const { return mat; }
 };
 
 class trap {

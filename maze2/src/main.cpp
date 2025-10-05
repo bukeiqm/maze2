@@ -17,6 +17,7 @@ int main()
 		mat[i][40] = 1;
 	}
 	map m1(mat);
+	m1.SetDestination(5, 10);
 	BeginBatchDraw();
 	while (true) {
 		cleardevice();
@@ -41,6 +42,7 @@ int main()
 		p1.SetDirection(direction::STAY);
 		DrawPlayer(p1);
 		DrawMap(m1);
+		if (p1.AtDest(m1)) outtextxy(400, 200, "Game Win");
 		FlushBatchDraw();
 	}
 	EndBatchDraw();
@@ -61,4 +63,7 @@ void DrawMap(const map& map) {
 			}
 		}
 	}
+	position dest = map.GetDestination();
+	setfillcolor(RED);
+	fillcircle(dest.x * 10, dest.y * 10, 10);
 }
