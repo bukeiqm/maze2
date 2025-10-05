@@ -32,9 +32,9 @@ public:
 	void CursorUp();
 	void CursorDown();
 	auto WhichOption() -> int;
-	auto GetTexts() -> decltype(msgs);
+	auto GetTexts() const -> decltype(msgs);
 	auto GetCursor() -> decltype(cursor);
-	auto GetCursorPosition() -> position;
+	auto GetCursorPosition() const -> position;
 	auto GetCursorIndex() -> int;
 };
 

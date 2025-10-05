@@ -69,7 +69,7 @@ auto ui::WhichOption() -> int {
 	return cursor.Which();
 }
 
-auto ui::GetTexts() -> decltype(msgs) {
+auto ui::GetTexts() const -> decltype(msgs) {
 	return msgs;
 }
 
@@ -77,7 +77,7 @@ auto ui::GetCursor() -> decltype(cursor) {
 	return cursor;
 }
 
-auto ui::GetCursorPosition() -> position {
+auto ui::GetCursorPosition() const -> position {
 	return cursor.options[cursor.index];
 }
 
