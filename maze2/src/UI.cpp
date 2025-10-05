@@ -1,4 +1,31 @@
-#include "UI.hpp"
+#include "UI.hpp" 
+
+void cursor::SetCursorPos(position pos) {
+	this->pos = pos;
+}
+
+void cursor::SetCursorPos(int x, int y) {
+	position temp(x, y);
+	pos = temp;
+}
+
+void cursor::AddOptions(position pos) {
+	options.push_back(pos);
+}
+
+void cursor::CursorUp(int step) {
+	if (index - step < 0) return;
+	index -= step;
+}
+
+void cursor::CursorDown(int step ) {
+	if (index + step >= options.size()) return;
+	index += step;
+}
+
+auto cursor::Which() -> int{
+	return index;
+}
 
 void ui::AppendBar(message msg) {
 	msgs.push_back(msg);
@@ -14,30 +41,48 @@ void ui::AppendBar(int x, int y, string text) {
 	msgs.push_back(msg);
 }
 
+void ui::AppendBar(string text, font type) {
+
+}
+
+void ui::AddOptionsFromBars(int index) {
+	message msg = msgs[index];
+	cursor.AddOptions(msg.pos);
+}
+
 void ui::InitCursor() {
-	cursor = msgs[0].pos;
+	if (cursor.options.empty()) return;
+	cursor.index = 0;
 }
 
 void ui::CursorUp() {
-	cursor.y -= 30;
+	cursor.CursorUp();
+	//cursor.SetCursorPos(cursor.pos.dev(direction::NORTH, 30));
 }
 
 void ui::CursorDown() {
-	cursor.y += 30;
+	cursor.CursorDown();
+	//cursor.SetCursorPos(cursor.pos.dev(direction::SOUTH, 30));
 }
 
 auto ui::WhichOption() -> int {
-	int index = 0;
-	for (auto i : msgs) {
-		if (i.pos == cursor) return index;
-		index++;
-	}
+	return cursor.Which();
 }
 
 auto ui::GetTexts() -> decltype(msgs) {
 	return msgs;
 }
 
-auto ui::GetCursorPos() -> decltype(cursor) {
+auto ui::GetCursor() -> decltype(cursor) {
 	return cursor;
 }
+
+auto ui::GetCursorPosition() -> position {
+	return cursor.options[cursor.index];
+}
+
+auto ui::GetCursorIndex() -> int {
+	return cursor.Which();
+}
+
+cursor::cursor(position pos, int index):pos(pos),index(index) {}

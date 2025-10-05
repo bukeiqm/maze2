@@ -5,6 +5,9 @@
 #include <iostream>
 #include "datatypes.hpp"
 #include "UI.hpp"
+#include "player.hpp"
+#include "map.hpp"
+#include "trap.hpp"
 using namespace std;
 
 void DrawPlayer(const player& p1);
@@ -22,8 +25,8 @@ int main()
 	m1.SetDestination(5, 10);
 	BeginBatchDraw();
 	DrawUserUI();
+	Sleep(500);
 	while (true) {
-		cleardevice();
 		if (GetAsyncKeyState('A')) {
 			p1.SetDirection(direction::WEST);
 		}
@@ -41,14 +44,16 @@ int main()
 			break;
 		}
 		if(!p1.IsJammed(m1))	p1.Move();
-		Sleep(50);
 		p1.SetDirection(direction::STAY);
+		Sleep(100);
+		cleardevice();
 		DrawPlayer(p1);
 		DrawMap(m1);
 		if (p1.AtDest(m1)) outtextxy(400, 200, "Game Win");
 		FlushBatchDraw();
 	}
 	EndBatchDraw();
+	exit(0);
 	return 0;
 }
 
@@ -84,6 +89,11 @@ void DrawUserUI() {
 	usr.AppendBar(350, 150, "Start Game");
 	usr.AppendBar(350, 180, "Select Mode");
 	usr.AppendBar(350, 210, "Select Map");
+	usr.AppendBar(350, 240, "Exit Game");
+	usr.AddOptionsFromBars(1);
+	usr.AddOptionsFromBars(2);
+	usr.AddOptionsFromBars(3);
+	usr.AddOptionsFromBars(4);
 	usr.InitCursor();
 	BeginBatchDraw();
 	while (true) {
@@ -94,14 +104,29 @@ void DrawUserUI() {
 		if (GetAsyncKeyState(VK_DOWN)) {
 			usr.CursorDown();
 		}
+
+		if (usr.GetCursorIndex() == 3 && (GetAsyncKeyState(VK_SPACE)||GetAsyncKeyState(VK_RETURN))) {
+			exit(0);
+		}
+
+		if (usr.GetCursorIndex() == 1 && (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN))) {
+			break;
+		}
+
 		Sleep(50);
+
 		cleardevice();
 		for (auto i : usr.GetTexts()) {
-			outtextxy(i.pos.x, i.pos.y, i.text.c_str());
+			const message& msg = i;
+			const position& pos = i.pos;
+			const string& text = i.text;
+			const int& x = pos.x, y = pos.y;
+			outtextxy(x, y, text.c_str());
 		}
+		const position& curPos = usr.GetCursorPosition();
+		const int& x = curPos.x, y = curPos.y;
 		setfillcolor(GREEN);
-		position temp = usr.GetCursorPos();
-		fillcircle(temp.x - 20, temp.y + 10, 5);
+		fillcircle(x - 20, y + 10, 5);
 		FlushBatchDraw();
 	}
 	EndBatchDraw();
