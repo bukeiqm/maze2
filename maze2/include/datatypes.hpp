@@ -13,6 +13,7 @@ struct position {
 	int x, y;
 	position(int x = 0,int y = 0):x(x),y(y){}
 	bool operator==(const position& other) const;
+	position& operator=(const position& other);
 	auto Offset(direction dir, int step = 1) -> const position& ;
 };
 

@@ -8,32 +8,69 @@
 #include "player.hpp"
 #include "map.hpp"
 #include "trap.hpp"
+#include <random>
 //#include "drawingfunc.hpp"
 using namespace std;
 
-vector<vector<int>> map1, map2;
+vector<vector<int>> map1(40, vector<int>(80));
 
-
+void RandomMap() {
+	for (int i = 0; i < 100; i++) {
+		int column = rand() % 80;
+		int row = rand() % 40;
+		map1[row][column] = true;
+	}
+}
 
 int main()
 {
 	initgraph(800, 400);
 
+	RandomMap();
+
 	BeginBatchDraw();
 
 	player p1;
 
-	p1.Draw();
+	p1.SetPosition({ 40,20 });
 
-	//vector<vector<int>> map1(40, vector<int> (80));
+	
 
-	//map realMap(map1);
+	map realMap(map1);
 
-	//DrawMap(realMap);
+	setbkcolor(LIGHTGRAY);
 
-	//DrawUserUI();
+	while (true) {
 
-	FlushBatchDraw();
+		if (GetAsyncKeyState('A')) {
+			p1.SetDirection(direction::WEST);
+			if(!p1.IsJammed(map1))
+			p1.Move(direction::WEST);
+		}
+		if (GetAsyncKeyState('D')) {
+			p1.SetDirection(direction::EAST);
+			if (!p1.IsJammed(map1))
+			p1.Move(direction::EAST);
+		}
+		if (GetAsyncKeyState('W')) {
+			p1.SetDirection(direction::NORTH);
+			if (!p1.IsJammed(map1))
+			p1.Move(direction::NORTH);
+		}
+		if (GetAsyncKeyState('S')) {
+			p1.SetDirection(direction::SOUTH);
+			if (!p1.IsJammed(map1))
+			p1.Move(direction::SOUTH);;
+		}
+
+		realMap.UpdateCharted(p1.GetPosition());
+
+		cleardevice();
+		p1.Draw();
+		realMap.Draw(true);
+
+		FlushBatchDraw();
+	}
 
 	while (!GetAsyncKeyState(VK_ESCAPE));
 

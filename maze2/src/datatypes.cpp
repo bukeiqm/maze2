@@ -15,6 +15,12 @@ bool position::operator==(const position& other) const {
 	return x == other.x && y == other.y;
 }
 
+position& position::operator=(const position& other)  {
+	x = other.x;
+	y = other.y;
+	return *this;
+}
+
 object::object(position initPos, ::shape initShape, COLOR initColor) :pos(initPos), shape(initShape), color(initColor) {
 
 }

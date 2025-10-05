@@ -6,23 +6,7 @@ void DrawPlayer(const player& p1) {
 }
 
 void DrawMap(const map& map) {
-	setfillcolor(WHITE);
-	const int scaleFactor = 10;
-	const int posAnchor = 5;
-	const int rectSize = 5;
-	for (int i = 0; i < map.n; i++) {
-		for (int j = 0; j < map.m; j++) {
-			if (!map.IsPathway(i, j)) {
-				fillrectangle(posAnchor + i * scaleFactor - rectSize,
-					posAnchor + j * scaleFactor - rectSize,
-					posAnchor + i * scaleFactor + rectSize,
-					posAnchor + j * scaleFactor + rectSize);
-			}
-		}
-	}
-	position dest = map.GetDestination();
-	setfillcolor(RED);
-	fillcircle(dest.x * 10, dest.y * 10, 10);
+
 }
 
 void DrawUserUI() {
