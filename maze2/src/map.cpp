@@ -1,12 +1,9 @@
 #include "map.hpp"
 
-map::map(const vector<vector<int>> mat) {
-	this->mat = mat;
+map::map(const vector<vector<int>>& matrix) {
+	mat = matrix;
 	m = mat.size();
 	n = mat[0].size();
-}
-
-void map::InitMap() {
 	for (int i = 0; i < n; i++) {
 		mat[0][i] = 1;
 		mat[m - 1][i] = 1;
@@ -15,6 +12,7 @@ void map::InitMap() {
 		mat[j][0] = 1;
 		mat[j][n - 1] = 1;
 	}
+
 }
 
 bool map::IsPathway(int x, int y) const {
@@ -31,4 +29,12 @@ void map::SetDestination(int x, int y) {
 
 void map::SetDestination(position pos) {
 	destination = pos;
+}
+
+auto map::GetDestination() const -> const position& {
+	return destination;
+}
+
+auto map::MatTable() -> const vector<vector<int>>& const {
+	return mat;
 }

@@ -8,10 +8,12 @@
 #include "player.hpp"
 #include "map.hpp"
 #include "trap.hpp"
-#include "drawingfunc.hpp"
+//#include "drawingfunc.hpp"
 using namespace std;
 
-vector<vector<int>> map1{};
+vector<vector<int>> map1, map2;
+
+
 
 int main()
 {
@@ -19,13 +21,24 @@ int main()
 
 	BeginBatchDraw();
 
-	DrawUserUI();
+	player p1;
+
+	p1.Draw();
+
+	//vector<vector<int>> map1(40, vector<int> (80));
+
+	//map realMap(map1);
+
+	//DrawMap(realMap);
+
+	//DrawUserUI();
+
+	FlushBatchDraw();
+
+	while (!GetAsyncKeyState(VK_ESCAPE));
 
 	Sleep(500);
 
-	while (true) {
-		
-	}
 	EndBatchDraw();
 	exit(0);
 	return 0;

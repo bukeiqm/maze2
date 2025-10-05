@@ -2,7 +2,7 @@
 
 void DrawPlayer(const player& p1) {
 	setfillcolor(YELLOW);
-	fillcircle(p1.GetX() * 10, p1.GetY() * 10, 10);
+	//fillcircle(p1.GetX() * 10, p1.GetY() * 10, 10);
 }
 
 void DrawMap(const map& map) {

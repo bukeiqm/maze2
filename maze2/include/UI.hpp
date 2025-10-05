@@ -1,3 +1,4 @@
+#pragma once
 #include "datatypes.hpp"
 class cursor {
 private:
