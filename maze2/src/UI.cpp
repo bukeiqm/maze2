@@ -1,5 +1,14 @@
 #include "UI.hpp" 
 
+cursor::cursor(const vector<message>& initMsg, int index) : object({0,0},shape::CURSOR), options(initMsg), index(index) {
+	SetColor(GREEN);
+
+}
+
+ui::ui(const vector<message>& initMsgs) :cursor(initMsgs), msgs(initMsgs) {
+
+}
+
 void cursor::SetCursorPos(position pos) {
 	this->pos = pos;
 }
@@ -9,18 +18,16 @@ void cursor::SetCursorPos(int x, int y) {
 	pos = temp;
 }
 
-void cursor::AddOptions(position pos) {
-	options.push_back(pos);
-}
-
 void cursor::CursorUp(int step) {
 	if (index - step < 0) return;
 	index -= step;
+	pos = options[index].GetPosition();
 }
 
-void cursor::CursorDown(int step ) {
+void cursor::CursorDown(int step) {
 	if (index + step >= options.size()) return;
 	index += step;
+	pos = options[index].GetPosition();
 }
 
 auto cursor::Which() -> int{
@@ -44,45 +51,24 @@ void ui::AppendBar(int x, int y, string text) {
 void ui::AppendBar(string text, font type) {
 
 }
-
-void ui::AddOptionsFromBars(int index) {
-	message msg = msgs[index];
-	//cursor.AddOptions(msg.pos);
-}
-
-void ui::InitCursor() {
-	if (cursor.options.empty()) return;
-	cursor.index = 0;
-}
-
 void ui::CursorUp() {
-	cursor.CursorUp();
-	//cursor.SetCursorPos(cursor.pos.dev(direction::NORTH, 30));
+	cursor::CursorUp();
 }
-
 void ui::CursorDown() {
-	cursor.CursorDown();
-	//cursor.SetCursorPos(cursor.pos.dev(direction::SOUTH, 30));
+	cursor::CursorDown();
 }
-
 auto ui::WhichOption() -> int {
-	return cursor.Which();
+	return Which();
 }
 
-auto ui::GetTexts() const -> decltype(msgs) {
-	return msgs;
+void ui::Draw() {
+	cursor::Draw();
 }
 
-auto ui::GetCursor() -> decltype(cursor) {
-	return cursor;
+void cursor::Draw() {
+	for (auto i : options) {
+		i.Draw();
+	}
+	pos = options[index].GetPosition();
+	object::Draw();
 }
-
-auto ui::GetCursorPosition() const -> position {
-	return cursor.options[cursor.index];
-}
-
-auto ui::GetCursorIndex() -> int {
-	return cursor.Which();
-}
-
-cursor::cursor(position pos, int index):pos(pos),index(index) {}

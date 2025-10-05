@@ -9,36 +9,6 @@ void DrawMap(const map& map) {
 
 }
 
-void DrawUserUI() {
-	setfillcolor(WHITE);
-	ui usr = InitUIp();
-	BeginBatchDraw();
-	while (true) {
-
-		Sleep(50);
-
-		cleardevice();
-		DrawUI(usr);
-		FlushBatchDraw();
-	}
-	EndBatchDraw();
-}
-
-ui InitUIp() {
-	ui usr;
-	usr.AppendBar(350, 120, "Maze Game");
-	usr.AppendBar(350, 150, "Start Game");
-	usr.AppendBar(350, 180, "Select Mode");
-	usr.AppendBar(350, 210, "Select Map");
-	usr.AppendBar(350, 240, "Exit Game");
-	usr.AddOptionsFromBars(1);
-	usr.AddOptionsFromBars(2);
-	usr.AddOptionsFromBars(3);
-	usr.AddOptionsFromBars(4);
-	usr.InitCursor();
-	return usr;
-}
-
 void DrawUI(const ui& usr) {
 	
 }
@@ -56,4 +26,32 @@ void DrawUI(const ui& usr) {
 	const int& x = curPos.x, y = curPos.y;
 	setfillcolor(GREEN);
 	fillcircle(x - 20, y + 10, 5);
+*/
+
+/*
+* //Contents of titles
+	ui usr;
+	usr.AppendBar(350, 120, "Maze Game");
+	usr.AppendBar(350, 150, "Start Game");
+	usr.AppendBar(350, 180, "Select Mode");
+	usr.AppendBar(350, 210, "Select Map");
+	usr.AppendBar(350, 240, "Exit Game");
+	return usr;
+*/
+
+/*
+	void DrawUserUI() {
+	setfillcolor(WHITE);
+	ui usr = InitUIp();
+	BeginBatchDraw();
+	while (true) {
+
+		Sleep(50);
+
+		cleardevice();
+		DrawUI(usr);
+		FlushBatchDraw();
+	}
+	EndBatchDraw();
+}
 */

@@ -36,6 +36,11 @@ int main()
 
 	message msg("test", { 400,200 });
 
+	vector<message> msgs;
+	msgs.push_back(msg);
+
+	cursor cur(msgs);
+
 	map realMap(map1);
 
 	setbkcolor(LIGHTGRAY);
@@ -67,9 +72,9 @@ int main()
 
 		cleardevice();
 		p1.Draw();
-		realMap.Draw(true);
+		realMap.Draw(false);
 		msg.Draw();
-
+		cur.Draw();
 		FlushBatchDraw();
 	}
 

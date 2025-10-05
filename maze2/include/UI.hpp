@@ -1,42 +1,37 @@
 #pragma once
 #include "datatypes.hpp"
-class cursor {
+class cursor :public object {
 private:
-	position pos;
-	vector<position> options;
+	const vector<message> &options;
 	int index;
 	friend class ui;
 public:
-	cursor(position pos = { 0,0 }, int index = 0);
+	cursor(const vector<message>& initMsg, int index = 0);
 public:
 	void SetCursorPos(int x, int y);
 	void SetCursorPos(position pos);
-	void AddOptions(position pos);
 	void CursorUp(int step = 1);
 	void CursorDown(int step = 1);
 	auto Which() -> int;
+	void Draw() override;
 };
 
 
 
-class ui {
+class ui : protected cursor{
 private:
 	vector<message> msgs;
-	cursor cursor;
+public:
+	ui(const vector<message>& initMsgs);
 public:
 	void AppendBar(message msg);
 	void AppendBar(position pos, string text);
 	void AppendBar(int x, int y, string text);
 	void AppendBar(string text, font txtType);
-	void AddOptionsFromBars(int index);
-	void InitCursor();
 	void CursorUp();
 	void CursorDown();
 	auto WhichOption() -> int;
-	auto GetTexts() const -> decltype(msgs);
-	auto GetCursor() -> decltype(cursor);
-	auto GetCursorPosition() const -> position;
-	auto GetCursorIndex() -> int;
+	void Draw() override;
 };
 
 //游标类维护一个指针，用于指向选项，当绘图函数，或者游戏机制需要时返回这个指针
@@ -51,3 +46,6 @@ public:
 //将所有选项的坐标放在一个表里，让游标在不同坐标间移动就好了
 
 //游标只负责指向选项，移动交给外部
+
+//10.06
+//现在消息有自己的坐标了，光标能够指向它就行了

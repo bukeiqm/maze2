@@ -17,6 +17,7 @@ enum class font {
 
 enum class shape {
 	TEXT,
+	CURSOR,
 	RECT,
 	CIRCLE,
 	SQUARE,

@@ -41,6 +41,33 @@ auto object::GetShape() const -> const ::shape& {
 	return shape;
 }
 
+void object::Draw() {
+	const int scaleFactor = 10;
+	const int posAnchor = 5;
+	const int size = 5;
+
+	int x = pos.x;
+	int y = pos.y;
+
+	setfillcolor(color);
+	switch (shape) {
+	case shape::CIRCLE:
+		fillcircle(posAnchor + x * scaleFactor, posAnchor + y * scaleFactor, size);
+		break;
+	case shape::RECT:
+		fillrectangle(posAnchor + x * scaleFactor - size,
+			posAnchor + y * scaleFactor - size,
+			posAnchor + x * scaleFactor + size,
+			posAnchor + y * scaleFactor + size);
+		break;
+	case shape::CURSOR:
+		fillcircle(x - 20, y + 8, size);
+		break;
+	default:
+		break;
+	}
+}
+
 movable::movable(position initPos, ::shape initShape, COLOR initColor, direction initDir, int initSpd) :object(initPos, initShape, initColor), dir(initDir), speed(initSpd) {
 
 }
@@ -63,5 +90,6 @@ message::message(string s, position pos, font type) :object(pos), text(s), msgTy
 
 void message::Draw() {
 	const int x = pos.x, y = pos.y;
-	outtextxy(x, y, text.c_str());
+	settextcolor(BLACK);
+	outtextxy(x , y , text.c_str());
 }
