@@ -3,80 +3,30 @@
 
 #include <graphics.h>
 #include <iostream>
-#include "datatypes.hpp"
-#include "UI.hpp"
+#include "types.hpp"
+#include "cursor.hpp"
 #include "player.hpp"
 #include "map.hpp"
 #include "trap.hpp"
 #include <random>
-//#include "drawingfunc.hpp"
 using namespace std;
 
 vector<vector<int>> map1(40, vector<int>(80));
+int mapSelect = 0;
+bool fogMode = false;
 
-void RandomMap() {
-	for (int i = 0; i < 100; i++) {
-		int column = rand() % 80;
-		int row = rand() % 40;
-		map1[row][column] = true;
-	}
-}
+void Hello();
+void SelectMode();
+void SelectMap();
+void Play();
 
 int main()
 {
 	initgraph(800, 400);
 
-	RandomMap();
-
 	BeginBatchDraw();
 
-	player p1;
-
-	p1.SetPosition({ 40,20 });
-
-	message msg("test", { 400,200 });
-
-	vector<message> msgs;
-	msgs.push_back(msg);
-
-	cursor cur(msgs);
-
-	map realMap(map1);
-
-	setbkcolor(LIGHTGRAY);
-
-	while (true) {
-
-		if (GetAsyncKeyState('A')) {
-			p1.SetDirection(direction::WEST);
-			if(!p1.IsJammed(map1))
-			p1.Move(direction::WEST);
-		}
-		if (GetAsyncKeyState('D')) {
-			p1.SetDirection(direction::EAST);
-			if (!p1.IsJammed(map1))
-			p1.Move(direction::EAST);
-		}
-		if (GetAsyncKeyState('W')) {
-			p1.SetDirection(direction::NORTH);
-			if (!p1.IsJammed(map1))
-			p1.Move(direction::NORTH);
-		}
-		if (GetAsyncKeyState('S')) {
-			p1.SetDirection(direction::SOUTH);
-			if (!p1.IsJammed(map1))
-			p1.Move(direction::SOUTH);;
-		}
-
-		realMap.UpdateCharted(p1.GetPosition());
-
-		cleardevice();
-		p1.Draw();
-		realMap.Draw(false);
-		msg.Draw();
-		cur.Draw();
-		FlushBatchDraw();
-	}
+	Hello();
 
 	while (!GetAsyncKeyState(VK_ESCAPE));
 
@@ -87,57 +37,175 @@ int main()
 	return 0;
 }
 
-/*
-	if (GetAsyncKeyState(VK_UP)) {
-			usr.CursorUp();
+void Hello() {
+	message msg("Start Game", { 350, 150 }), msg2("Select Mode", { 350, 180 }), msg3("Select Map", { 350, 210, });
+
+	vector<message> msgs;
+	msgs.push_back(msg);
+	msgs.push_back(msg2);
+	msgs.push_back(msg3);
+	ui cur(msgs);
+	cur.AddTitle(message("Maze Game", { 350, 120 }, font::TITLE));
+	while (true) {
+		cleardevice();
+		cur.Draw();
+		FlushBatchDraw();
+		int option = cur.WhichOption();
+		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
+			switch (option) {
+			case 0:Play(); break;
+			case 1:SelectMode(); break;
+			case 2:SelectMap(); break;
+			}
+		}
+		if (GetAsyncKeyState(VK_ESCAPE)) exit(0);
+		if (GetAsyncKeyState(VK_UP)) {
+			cur.CursorUp();
 		}
 
 		if (GetAsyncKeyState(VK_DOWN)) {
-			usr.CursorDown();
+			cur.CursorDown();
+		}
+		Sleep(100);
+	}
+}
+
+void SelectMode() {
+	Sleep(100);
+	message msg("on", { 350, 150 }), msg2("off", { 350, 180 });
+
+	vector<message> msgs;
+	msgs.push_back(msg);
+	msgs.push_back(msg2);
+	ui cur(msgs);
+	cur.AddTitle(message("Fog Mode:", { 330, 120 }, font::TITLE));
+	while (true) {
+		cleardevice();
+		cur.Draw();
+
+		if (fogMode) {
+			message msg1("On", { 400,120 });
+			msg1.Draw();
+		}
+		else {
+			message msg1("Off", { 400,120 });
+			msg1.Draw();
 		}
 
-		if (usr.GetCursorIndex() == 3 && (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN))) {
-			exit(0);
+		FlushBatchDraw();
+		int option = cur.WhichOption();
+		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
+			switch (option) {
+			case 0:fogMode = true; break;
+			case 1:fogMode = false; break;
+			}
 		}
 
-		if (usr.GetCursorIndex() == 1 && (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN))) {
-			break;
-		}
-*/
+		if (GetAsyncKeyState(VK_LEFT)) return;
 
-/*
-	if (GetAsyncKeyState('A')) {
+		if (GetAsyncKeyState(VK_UP)) {
+			cur.CursorUp();
+		}
+
+		if (GetAsyncKeyState(VK_DOWN)) {
+			cur.CursorDown();
+		}
+		Sleep(100);
+	}
+}
+
+void SelectMap() {
+	Sleep(100);
+	message msg("m1", { 350, 150 }), msg2("m2", { 350, 180 }), msg3("m3", { 350, 210, });
+
+	vector<message> msgs;
+	msgs.push_back(msg);
+	msgs.push_back(msg2);
+	msgs.push_back(msg3);
+	ui cur(msgs);
+	cur.AddTitle(message("Map :", { 330, 120 }, font::TITLE));
+	while (true) {
+		cleardevice();
+		cur.Draw();
+
+		message msg("map" + to_string(mapSelect), { 370,120 });
+		msg.Draw();
+
+		FlushBatchDraw();
+		int option = cur.WhichOption();
+		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
+			switch (option) {
+			case 0:mapSelect = 0; break;
+			case 1:mapSelect = 1; break;
+			case 2:mapSelect = 2; break;
+			}
+		}
+
+		if (GetAsyncKeyState(VK_LEFT)) return;
+
+		if (GetAsyncKeyState(VK_UP)) {
+			cur.CursorUp();
+		}
+
+		if (GetAsyncKeyState(VK_DOWN)) {
+			cur.CursorDown();
+		}
+		Sleep(100);
+	}
+}
+
+void Play() {
+	player p1;
+
+	p1.SetPosition({ 40,20 });
+
+	map1[30][20] = 3;
+	map1[1][10] = 2;
+
+	map realMap(map1);
+
+	while (true) {
+		Sleep(100);
+		if (GetAsyncKeyState('A')) {
 			p1.SetDirection(direction::WEST);
+			if (!p1.IsJammed(map1))
+				p1.Move(direction::WEST);
 		}
 		if (GetAsyncKeyState('D')) {
 			p1.SetDirection(direction::EAST);
+			if (!p1.IsJammed(map1))
+				p1.Move(direction::EAST);
 		}
 		if (GetAsyncKeyState('W')) {
 			p1.SetDirection(direction::NORTH);
+			if (!p1.IsJammed(map1))
+				p1.Move(direction::NORTH);
 		}
 		if (GetAsyncKeyState('S')) {
 			p1.SetDirection(direction::SOUTH);
+			if (!p1.IsJammed(map1))
+				p1.Move(direction::SOUTH);;
 		}
-		if (GetAsyncKeyState(VK_ESCAPE)) {
-			closegraph();
-			break;
+
+		if (GetAsyncKeyState(VK_ESCAPE)) exit(0);
+
+		if (GetAsyncKeyState(VK_BACK)) return;
+
+		if (GetAsyncKeyState('X'))
+		{
+			cout << "Player currently at:" << p1.GetPosition().x << "," << p1.GetPosition().y << endl;
 		}
-		if(!p1.IsJammed(m1))	p1.Move();
-		p1.SetDirection(direction::STAY);
-		Sleep(100);
+
+		if (GetAsyncKeyState('B')) {
+			cout << "Destination at:" << realMap.GetDestination().x << "," << realMap.GetDestination().y << endl;
+		}
+
+		realMap.UpdateCharted(p1.GetPosition());
+
 		cleardevice();
-		DrawPlayer(p1);
-		DrawMap(m1);
-		if (p1.AtDest(m1)) outtextxy(400, 200, "Game Win");
+		p1.Draw();
+		if (p1.AtDest(realMap)) outtextxy(400, 200, "game win");
+		realMap.Draw(fogMode);
 		FlushBatchDraw();
-*/
-
-/*
-	player p1(40, 20);
-
-	vector<vector<int>> mat(40, vector<int>(80, 0));
-
-	map m1(mat);
-	m1.InitMap();
-	m1.SetDestination(5, 10);
-*/
+	}
+}

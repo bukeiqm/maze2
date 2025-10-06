@@ -1,5 +1,5 @@
 #pragma once
-#include "datatypes.hpp"
+#include "types.hpp"
 class cursor :public object {
 private:
 	const vector<message> &options;
@@ -21,6 +21,7 @@ public:
 class ui : protected cursor{
 private:
 	vector<message> msgs;
+	message title;
 public:
 	ui(const vector<message>& initMsgs);
 public:
@@ -28,6 +29,7 @@ public:
 	void AppendBar(position pos, string text);
 	void AppendBar(int x, int y, string text);
 	void AppendBar(string text, font txtType);
+	void AddTitle(const message& title);
 	void CursorUp();
 	void CursorDown();
 	auto WhichOption() -> int;

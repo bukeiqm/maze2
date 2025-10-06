@@ -1,5 +1,5 @@
 #pragma once
-#include "datatypes.hpp"
+#include "types.hpp"
 #include "player.hpp"
 class trap: public object {
 private:

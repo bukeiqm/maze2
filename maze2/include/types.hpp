@@ -2,7 +2,6 @@
 #include <graphics.h>
 #include<vector>
 #include<string>
-#include "enumclasses.h"
 
 using std::vector;
 using std::string;
@@ -10,6 +9,30 @@ using std::string;
 typedef unsigned int COLOR;
 
 class object;
+
+enum class direction {
+	NORTH,
+	EAST,
+	SOUTH,
+	WEST,
+	STAY
+};
+
+enum class font {
+	TITLE,
+	SUBTITLE,
+	TEXT,
+	OPTION
+};
+
+enum class shape {
+	TEXT,
+	CURSOR,
+	RECT,
+	CIRCLE,
+	SQUARE,
+	ELLIPSE
+};
 
 struct position {
 	int x, y;
@@ -55,8 +78,5 @@ public:
 	message(string s, position pos = { 0,0 }, font type = font::TEXT);
 public:
 	void Draw() override;
+	const message& operator=(const message& other);
 };
-
-/*
-
-	*/

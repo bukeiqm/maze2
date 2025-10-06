@@ -1,12 +1,12 @@
-#include "UI.hpp" 
+#include "cursor.hpp" 
 
 cursor::cursor(const vector<message>& initMsg, int index) : object({0,0},shape::CURSOR), options(initMsg), index(index) {
 	SetColor(GREEN);
 
 }
 
-ui::ui(const vector<message>& initMsgs) :cursor(initMsgs), msgs(initMsgs) {
-
+ui::ui(const vector<message>& initMsgs) : cursor(initMsgs), msgs(initMsgs), title("Untitled", { 350, 180 }) {
+	// 已将 title 初始化移至初始化列表，避免默认构造 message
 }
 
 void cursor::SetCursorPos(position pos) {
@@ -63,6 +63,7 @@ auto ui::WhichOption() -> int {
 
 void ui::Draw() {
 	cursor::Draw();
+	title.Draw();
 }
 
 void cursor::Draw() {
@@ -71,4 +72,8 @@ void cursor::Draw() {
 	}
 	pos = options[index].GetPosition();
 	object::Draw();
+}
+
+void ui::AddTitle(const message& title) {
+	this->title = title;
 }

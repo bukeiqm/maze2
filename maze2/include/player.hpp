@@ -1,5 +1,5 @@
 #pragma once
-#include "datatypes.hpp"
+#include "types.hpp"
 #include "map.hpp"
 class player :public movable {
 private:

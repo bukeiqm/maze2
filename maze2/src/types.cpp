@@ -1,4 +1,4 @@
-#include "datatypes.hpp"
+#include "types.hpp"
 
 auto position::Offset(direction dir, int step) -> const position& {
 	int xp = x, yp = y;
@@ -90,6 +90,12 @@ message::message(string s, position pos, font type) :object(pos), text(s), msgTy
 
 void message::Draw() {
 	const int x = pos.x, y = pos.y;
-	settextcolor(BLACK);
+	settextcolor(LIGHTBLUE);
 	outtextxy(x , y , text.c_str());
+}
+
+const message& message::operator=(const message& other) {
+	pos = other.pos;
+	text = other.text;
+	return *this;
 }
