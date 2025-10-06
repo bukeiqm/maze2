@@ -22,6 +22,7 @@ void Play();
 
 int main()
 {
+	srand(time(0));
 	initgraph(800, 400);
 
 	BeginBatchDraw();
@@ -203,7 +204,9 @@ void Play() {
 		}
 
 		realMap.UpdateCharted(p1.GetPosition());
+		trap1.DoDamageTo(p1);
 		trap1.Move(realMap, p1);
+		trap1.Revive();
 		cleardevice();
 		p1.Draw();
 		trap1.Draw();
