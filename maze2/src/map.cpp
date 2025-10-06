@@ -18,6 +18,10 @@ bool map::IsDest(position pos) const {
 	return mat[pos.y][pos.x] == 3;
 }
 
+auto map::GetStart() const -> const position& {
+	return startPoint;
+}
+
 auto map::GetDestination() const -> const position& {
 	return destination;
 }
@@ -86,4 +90,9 @@ void map::LoadFromMat(const vector<vector<int>>& newMat) {
 
 vector<int>& map::operator[] (int index) {
 	return mat[index];
+}
+
+position map::GetSize() {
+	//pairs(colNum,rowNum)
+	return { n,m };
 }

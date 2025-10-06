@@ -17,7 +17,9 @@ public:
 	bool IsDest(position pos) const;
 	void LoadFromMat(const vector<vector<int>>& newMat);
 	void UpdateCharted(position currentPos);
+	auto GetStart() const -> const position&;
 	auto GetDestination() const -> const position&;
+	position GetSize();
 	auto GetMat() -> const vector<vector<int>>&;
 	void Draw(bool fogMode = false);
 	vector<int>& operator[] (int index);

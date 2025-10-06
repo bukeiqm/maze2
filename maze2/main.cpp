@@ -157,12 +157,14 @@ void SelectMap() {
 void Play() {
 	player p1;
 
-	p1.SetPosition({ 40,20 });
-
 	map1[30][20] = 3;
 	map1[1][10] = 2;
 
 	map realMap(map1);
+
+	trap trap1;
+
+	p1.SetPosition(realMap.GetStart());
 
 	while (true) {
 		Sleep(100);
@@ -201,9 +203,10 @@ void Play() {
 		}
 
 		realMap.UpdateCharted(p1.GetPosition());
-
+		trap1.Move(realMap, p1);
 		cleardevice();
 		p1.Draw();
+		trap1.Draw();
 		if (p1.AtDest(realMap)) outtextxy(400, 200, "game win");
 		realMap.Draw(fogMode);
 		FlushBatchDraw();
