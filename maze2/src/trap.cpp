@@ -19,7 +19,7 @@ void trap::Move(map m1, player p1) {
     if (triggered) return;    // 已触发的陷阱不移动
     if (duration < 0) return; // 失效的陷阱不移动
 
-    if (--duration % 11 != 0) return;
+    if (--duration % 17 != 0) return;
 
     int n = m1.GetSize().x, m = m1.GetSize().y;
     int x = p1.GetPosition().x, y = p1.GetPosition().y;

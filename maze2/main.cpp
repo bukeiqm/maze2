@@ -3,6 +3,7 @@
 
 #include <graphics.h>
 #include <iostream>
+#include <queue>
 #include "types.hpp"
 #include "cursor.hpp"
 #include "player.hpp"
@@ -11,7 +12,7 @@
 #include <random>
 using namespace std;
 
-vector<vector<int>> map1(40, vector<int>(80));
+vector<vector<int>> map1(40, vector<int>(64));
 int mapSelect = 0;
 bool fogMode = false;
 
@@ -19,11 +20,15 @@ void Hello();
 void SelectMode();
 void SelectMap();
 void Play();
+void Hint();
 
 int main()
 {
 	srand(time(0));
 	initgraph(800, 400);
+
+	setfillcolor(WHITE);
+	fillrectangle(640, 0, 650, 400);
 
 	BeginBatchDraw();
 
@@ -39,16 +44,17 @@ int main()
 }
 
 void Hello() {
-	message msg("Start Game", { 350, 150 }), msg2("Select Mode", { 350, 180 }), msg3("Select Map", { 350, 210, });
+	message msg("Start Game", { 270, 150 }), msg2("Select Mode", { 270, 180 }), msg3("Select Map", { 270, 210, });
 
 	vector<message> msgs;
 	msgs.push_back(msg);
 	msgs.push_back(msg2);
 	msgs.push_back(msg3);
 	ui cur(msgs);
-	cur.AddTitle(message("Maze Game", { 350, 120 }, font::TITLE));
+	cur.AddTitle(message("Maze Game", { 270, 120 }, font::TITLE));
 	while (true) {
 		cleardevice();
+		Hint();
 		cur.Draw();
 		FlushBatchDraw();
 		int option = cur.WhichOption();
@@ -70,26 +76,27 @@ void Hello() {
 		Sleep(100);
 	}
 }
-
+	
 void SelectMode() {
 	Sleep(100);
-	message msg("on", { 350, 150 }), msg2("off", { 350, 180 });
+	message msg("on", { 270, 150 }), msg2("off", { 270, 180 });
 
 	vector<message> msgs;
 	msgs.push_back(msg);
 	msgs.push_back(msg2);
 	ui cur(msgs);
-	cur.AddTitle(message("Fog Mode:", { 330, 120 }, font::TITLE));
+	cur.AddTitle(message("Fog Mode:", { 250, 120 }, font::TITLE));
 	while (true) {
 		cleardevice();
 		cur.Draw();
+		Hint();
 
 		if (fogMode) {
-			message msg1("On", { 400,120 });
+			message msg1("On", { 320,120 });
 			msg1.Draw();
 		}
 		else {
-			message msg1("Off", { 400,120 });
+			message msg1("Off", { 320,120 });
 			msg1.Draw();
 		}
 
@@ -102,7 +109,7 @@ void SelectMode() {
 			}
 		}
 
-		if (GetAsyncKeyState(VK_LEFT)) return;
+		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(VK_BACK)) return;
 
 		if (GetAsyncKeyState(VK_UP)) {
 			cur.CursorUp();
@@ -117,19 +124,20 @@ void SelectMode() {
 
 void SelectMap() {
 	Sleep(100);
-	message msg("m1", { 350, 150 }), msg2("m2", { 350, 180 }), msg3("m3", { 350, 210, });
+	message msg("m1", { 270, 150 }), msg2("m2", { 270, 180 }), msg3("m3", { 270, 210 });
 
 	vector<message> msgs;
 	msgs.push_back(msg);
 	msgs.push_back(msg2);
 	msgs.push_back(msg3);
 	ui cur(msgs);
-	cur.AddTitle(message("Map :", { 330, 120 }, font::TITLE));
+	cur.AddTitle(message("Map :", { 260, 120 }, font::TITLE));
 	while (true) {
 		cleardevice();
 		cur.Draw();
+		Hint();
 
-		message msg("map" + to_string(mapSelect), { 370,120 });
+		message msg("map" + to_string(mapSelect), { 300,120 });
 		msg.Draw();
 
 		FlushBatchDraw();
@@ -142,7 +150,7 @@ void SelectMap() {
 			}
 		}
 
-		if (GetAsyncKeyState(VK_LEFT)) return;
+		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(VK_BACK)) return;
 
 		if (GetAsyncKeyState(VK_UP)) {
 			cur.CursorUp();
@@ -163,7 +171,11 @@ void Play() {
 
 	map realMap(map1);
 
-	trap trap1;
+	//vector<trap> traps;
+
+	trap trap1, trap2, trap3;
+
+	//traps.push_back(trap1); traps.push_back(trap2); traps.push_back(trap3);
 
 	p1.SetPosition(realMap.GetStart());
 
@@ -204,14 +216,45 @@ void Play() {
 		}
 
 		realMap.UpdateCharted(p1.GetPosition());
-		trap1.DoDamageTo(p1);
-		trap1.Move(realMap, p1);
-		trap1.Revive();
+
+
+
 		cleardevice();
+		/*
+		* for (auto i : traps) {
+			i.DoDamageTo(p1);
+			i.Move(realMap, p1);
+			i.Revive();
+			i.Draw();
+		}
+		*/
+		trap1.DoDamageTo(p1); trap2.DoDamageTo(p1);
+		trap1.Move(realMap, p1); trap2.Move(realMap, p1);
+		trap1.Revive(); trap2.Revive();
+		trap1.Draw(); trap2.Draw();
+
 		p1.Draw();
-		trap1.Draw();
-		if (p1.AtDest(realMap)) outtextxy(400, 200, "game win");
+		setfillcolor(WHITE);
+		fillrectangle(640, 0, 650, 400);
+		outtextxy(660, 90, ("Health:" + to_string(p1.GetHealth())).c_str());
+		if (p1.AtDest(realMap)) {
+			message gameWin("Game Win", { 300, 150 }, font::TITLE);
+			gameWin.Draw();
+		}
+		if (p1.GetHealth() <= 0) {
+			message gameLose("Game Lost", { 240,150 }, font::ALARM);
+			gameLose.Draw();
+		}
+
 		realMap.Draw(fogMode);
 		FlushBatchDraw();
 	}
+}
+
+void Hint() {
+	setfillcolor(WHITE);
+	fillrectangle(640, 0, 650, 400);
+	message hint1("Up/Down to Switch", { 660,120 }), hint2("Left/Bksps Back", { 660,150 }), hint3("Spas/Retn to Confirm", { 660,180 }),
+		hint4("Esc to Exit", { 660,210 });
+	hint1.Draw(); hint2.Draw(), hint3.Draw(), hint4.Draw();
 }

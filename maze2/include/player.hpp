@@ -10,5 +10,6 @@ public:
 public:
 	bool IsJammed(const map& map);
 	bool AtDest(const map& map);
+	int GetHealth();
 	void Draw() override;
 };

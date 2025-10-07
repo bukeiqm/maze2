@@ -22,7 +22,8 @@ enum class font {
 	TITLE,
 	SUBTITLE,
 	TEXT,
-	OPTION
+	OPTION,
+	ALARM
 };
 
 enum class shape {
@@ -74,6 +75,9 @@ class message : public object {
 public:
 	string text;
 	font msgType;
+	int fontSize;
+	unsigned int fontColor;
+	string fontStyle;
 public:
 	message(string s, position pos = { 0,0 }, font type = font::TEXT);
 public:

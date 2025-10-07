@@ -13,3 +13,7 @@ bool player::AtDest(const map& M) {
 void player::Draw() {
 	object::Draw();
 }
+
+int player::GetHealth() {
+	return health;
+}
