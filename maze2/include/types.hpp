@@ -8,7 +8,10 @@ using std::string;
 
 typedef unsigned int COLOR;
 
-class object;
+const int blockSize = 10;
+const int scaleFactor = blockSize;
+const int posAnchor = blockSize / 2;
+const int size = blockSize / 2;
 
 enum class direction {
 	NORTH,

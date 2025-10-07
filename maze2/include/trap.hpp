@@ -8,7 +8,8 @@ private:
 	int duration;
 	bool triggered;
 public:
-	trap(position initPos = { 0,0 }, int duration = 100, int damage = 50);
+	trap(position initPos, int duration = 100, int damage = 50);
+	trap(int duration = 100, int damage = 50);
 public:
 	void DoDamageTo(player& player);
 	void Mute();

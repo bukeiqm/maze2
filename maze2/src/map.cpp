@@ -1,7 +1,7 @@
 #include "map.hpp"
 
 map::map(const vector<vector<int>>& matrix) {
-	LoadFromMat(matrix);
+	SetMap(matrix);
 }
 
 bool map::IsPathway(int x, int y) const {
@@ -14,8 +14,14 @@ bool map::IsPathway(position pos) const {
 	return IsPathway(pos.x, pos.y);
 }
 
-bool map::IsDest(position pos) const {
-	return mat[pos.y][pos.x] == 3;
+bool map::IsDestination(int x, int y) const {
+	if (x < 0 || x >= n) return false;
+	if (y < 0 || y >= m) return false;
+	return mat[y][x] == 3;
+}
+
+bool map::IsDestination(position pos) const {
+	return IsDestination(pos.x, pos.y);
 }
 
 auto map::GetStart() const -> const position& {
@@ -24,10 +30,6 @@ auto map::GetStart() const -> const position& {
 
 auto map::GetDestination() const -> const position& {
 	return destination;
-}
-
-auto map::GetMat() -> const vector<vector<int>>& const {
-	return mat;
 }
 
 void map::UpdateCharted(position current) {
@@ -42,11 +44,19 @@ void map::UpdateCharted(position current) {
 }
 
 void map::Draw(bool isFogMode) {
-	setfillcolor(WHITE);
+
 	const int scaleFactor = 10;
 	const int posAnchor = 5;
 	const int rectSize = 5;
 	bool permitted = true;
+
+	setfillcolor(RED);
+	int x = destination.x, y = destination.y;
+	fillcircle(x * 10 + 5, y * 10 + 5, 5);
+
+	setfillcolor(DARKGRAY);
+	setlinecolor(DARKGRAY);
+
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			if (isFogMode && charted[j][i] == true) {
@@ -55,7 +65,8 @@ void map::Draw(bool isFogMode) {
 			if (isFogMode && charted[j][i] == false) {
 				permitted = false;
 			}
-			if (permitted == false && IsPathway(i,j)) {
+			if (permitted == false) {
+				setlinecolor(LIGHTGRAY);
 				setfillcolor(LIGHTGRAY);
 			}
 			if (permitted == true && IsPathway(i, j)) {
@@ -65,16 +76,13 @@ void map::Draw(bool isFogMode) {
 				posAnchor + j * scaleFactor - rectSize,
 				posAnchor + i * scaleFactor + rectSize,
 				posAnchor + j * scaleFactor + rectSize);
-			setfillcolor(WHITE);
+			setfillcolor(DARKGRAY);
+			setlinecolor(DARKGRAY);
 		}
 	}
-	setfillcolor(RED);
-	int x = destination.x, y = destination.y;
-	fillcircle(x * 10 + 5, y * 10 + 5, 5);
 }
 
-void map::LoadFromMat(const vector<vector<int>>& newMat) {
-	//if (newMat.size() != mat.size() || newMat.size() != mat.size()) return;
+void map::SetMap(const vector<vector<int>>& newMat) {
 	mat = newMat;
 	m = mat.size();
 	n = mat[0].size();
@@ -84,7 +92,7 @@ void map::LoadFromMat(const vector<vector<int>>& newMat) {
 			if (mat[j][i] == 3) destination = { i,j };
 		}
 	}
-	vector<vector<bool>> temp(40, vector<bool>(80));
+	vector<vector<bool>> temp(m, vector<bool>(n));
 	charted = temp;
 }
 
@@ -95,4 +103,12 @@ vector<int>& map::operator[] (int index) {
 position map::GetSize() {
 	//pairs(colNum,rowNum)
 	return { n,m };
+}
+
+void map::SetStart(position start) {
+	startPoint = start;
+}
+
+void map::SetDestination(position dest) {
+	destination = dest;
 }

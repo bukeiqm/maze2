@@ -42,9 +42,7 @@ auto object::GetShape() const -> const ::shape& {
 }
 
 void object::Draw() {
-	const int scaleFactor = 10;
-	const int posAnchor = 5;
-	const int size = 5;
+	
 
 	int x = pos.x;
 	int y = pos.y;
@@ -61,7 +59,7 @@ void object::Draw() {
 			posAnchor + y * scaleFactor + size);
 		break;
 	case shape::CURSOR:
-		fillcircle(x - 20, y + 8, size);
+		fillcircle(x - blockSize * 2, y + 12, size);
 		break;
 	default:
 		break;
@@ -87,7 +85,7 @@ void movable::SetSpeed(int newSpeed) {
 message::message(string s, position pos, font type) :object(pos), text(s), msgType(type) {
 	switch (type) {
 	case font::OPTION:
-		fontSize = 24; fontStyle = "Gabriola"; break;
+		fontSize = 24; fontStyle = "Candara"; break;
 	case font::SUBTITLE:
 		fontSize = 30, fontStyle = "Corbel"; break;
 	case font::TEXT:
@@ -123,5 +121,9 @@ void message::Draw() {
 const message& message::operator=(const message& other) {
 	pos = other.pos;
 	text = other.text;
+	msgType = other.msgType;
+	fontColor = other.fontColor;
+	fontSize = other.fontSize;
+	fontColor = other.fontColor;
 	return *this;
 }
