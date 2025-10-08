@@ -45,9 +45,6 @@ void map::UpdateCharted(position current) {
 
 void map::Draw(bool isFogMode) {
 
-	const int scaleFactor = 10;
-	const int posAnchor = 5;
-	const int rectSize = 5;
 	bool permitted = true;
 
 	setfillcolor(RED);

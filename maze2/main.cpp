@@ -10,9 +10,10 @@
 #include "map.hpp"
 #include "trap.hpp"
 #include <random>
+#include <functional>
 using namespace std;
 
-vector<vector<int>> map1(40, vector<int>(64));
+//vector<vector<int>> map1(40, vector<int>(64));
 int mapSelect = 0;
 bool fogMode = false;
 
@@ -22,6 +23,44 @@ void SelectMode();
 void SelectMap();
 void Play();
 void Hint();
+
+vector<vector<int>> maze = {
+ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+ {1, 2, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+ {1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1},
+ {1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+ {1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1},
+ {1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+ {1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1},
+ {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+ {1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1},
+ {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1},
+ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1},
+ {1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+ {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1},
+ {1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+ {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1},
+ {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+ {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1},
+ {1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1},
+ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+ {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1},
+ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
+
+vector<vector<int>> maze2 = {
+ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+ {1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+ {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
+ {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
+ {1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1},
+ {1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1},
+ {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1},
+ {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+ {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+ {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1},
+ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
 
 int main()
 {
@@ -43,6 +82,8 @@ int main()
 	exit(0);
 	return 0;
 }
+
+
 
 void Hello() {
 	message msg("Start Game", { 270, 150 }, font::OPTION), msg2("Settings", { 270, 180 }, font::OPTION),
@@ -124,7 +165,8 @@ void SelectMode() {
 	}
 }
 
-void SelectMap() {
+
+	void SelectMap() {
 	Sleep(100);
 	message msg("m1", { 300, 150 }, font::OPTION), msg2("m2", { 300, 180 }, font::OPTION), msg3("m3", { 300, 210 }, font::OPTION);
 
@@ -165,16 +207,20 @@ void SelectMap() {
 	}
 }
 
+
+
+
 void Play() {
 	player p1;
 
-	p1.SetPosition({ 32, 20 });
 
-	map realMap(map1);
+	map realMap(maze);
 
-	if(mapSelect == 2) realMap.SetMap(GenerateRandomMap(64, 40));
-
-	realMap.SetStart({ 32,20 });
+	switch (mapSelect) {
+	case 0:realMap.SetMap(maze); break;
+	case 1:realMap.SetMap(maze2); break;
+	case 2:realMap.SetMap(GenerateRandomMap(64, 40)); break;
+	}
 
 	vector<trap> traps;
 
@@ -241,7 +287,7 @@ void Play() {
 		outtextxy(660, 90, ("Health:" + to_string(p1.GetHealth())).c_str());
 		if (p1.AtDest(realMap)) {
 			p1.SetSpeed(0);
-			message gameWin("Game Win", { 300, 150 }, font::TITLE);
+			message gameWin("Game Win", { 240, 150 }, font::TITLE);
 			gameWin.Draw();
 		}
 		if (p1.GetHealth() <= 0) {
@@ -335,3 +381,61 @@ vector<vector<int>> GenerateRandomMap(int width, int height) {
 
 	return mat;
 }
+
+/*
+	// 定义菜单配置结构体，用于传递菜单参数
+struct MenuConfig {
+	string title; // 菜单标题
+	vector<string> options; // 选项列表
+	function<void(int)> onSelect; // 选中选项后的回调函数
+	position titlePos; // 标题位置
+	position firstOptionPos; // 第一个选项的位置
+};
+
+// 通用菜单函数，通过配置参数实现不同菜单功能
+void ShowMenu(const MenuConfig& config) {
+	vector<message> msgs;
+	int yOffset = 0;
+	// 创建选项消息
+	for (const auto& opt : config.options) {
+		msgs.emplace_back(opt,
+			position{ config.firstOptionPos.x, config.firstOptionPos.y + yOffset },
+			font::OPTION);
+		yOffset += 30; // 选项间距
+	}
+	ui cur(msgs);
+	cur.AddTitle(message(config.title, config.titlePos, font::OPTION));
+
+	while (true) {
+		cleardevice();
+		cur.Draw();
+		Hint(); // 复用提示信息
+		FlushBatchDraw();
+
+		int option = cur.WhichOption();
+		// 确认选中
+		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
+			config.onSelect(option); // 调用回调处理选中逻辑
+		}
+		// 返回上一级
+		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(VK_BACK)) return;
+		// 光标移动
+		if (GetAsyncKeyState(VK_UP)) cur.CursorUp();
+		if (GetAsyncKeyState(VK_DOWN)) cur.CursorDown();
+
+		Sleep(100);
+	}
+}
+void SelectMap() {
+	MenuConfig config;
+	config.title = "Map :";
+	config.titlePos = { 240, 120 };
+	config.options = { "m1", "m2", "m3" };
+	config.firstOptionPos = { 300, 150 };
+	// 选中后的回调（设置mapSelect）
+	config.onSelect = [&](int option) {
+		mapSelect = option;
+		};
+	ShowMenu(config); // 复用通用菜单逻辑
+}
+*/

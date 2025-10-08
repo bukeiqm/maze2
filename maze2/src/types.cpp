@@ -50,16 +50,16 @@ void object::Draw() {
 	setfillcolor(color);
 	switch (shape) {
 	case shape::CIRCLE:
-		fillcircle(posAnchor + x * scaleFactor, posAnchor + y * scaleFactor, size);
+		fillcircle(posAnchor + x * scaleFactor, posAnchor + y * scaleFactor, rectSize);
 		break;
 	case shape::RECT:
-		fillrectangle(posAnchor + x * scaleFactor - size,
-			posAnchor + y * scaleFactor - size,
-			posAnchor + x * scaleFactor + size,
-			posAnchor + y * scaleFactor + size);
+		fillrectangle(posAnchor + x * scaleFactor - rectSize,
+			posAnchor + y * scaleFactor - rectSize,
+			posAnchor + x * scaleFactor + rectSize,
+			posAnchor + y * scaleFactor + rectSize);
 		break;
 	case shape::CURSOR:
-		fillcircle(x - blockSize * 2, y + 12, size);
+		fillcircle(x - blockSize * 2, y + 12, rectSize);
 		break;
 	default:
 		break;

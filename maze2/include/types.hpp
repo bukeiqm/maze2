@@ -11,7 +11,7 @@ typedef unsigned int COLOR;
 const int blockSize = 10;
 const int scaleFactor = blockSize;
 const int posAnchor = blockSize / 2;
-const int size = blockSize / 2;
+const int rectSize = 5;
 
 enum class direction {
 	NORTH,
