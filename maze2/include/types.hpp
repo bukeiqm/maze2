@@ -18,7 +18,7 @@ enum class direction {
 	EAST,
 	SOUTH,
 	WEST,
-	STAY
+	NONE
 };
 
 enum class font {
@@ -39,43 +39,20 @@ enum class shape {
 };
 
 struct position {
+public:
 	int x, y;
 	position(int x = 0,int y = 0):x(x),y(y){}
+public:
 	bool operator==(const position& other) const;
-	position& operator=(const position& other);
-	auto Offset(direction dir, int step = 1) -> const position& ;
+	auto operator=(const position& other) -> position&;
+	auto Offset(direction dir, int step = 1) const -> const position& ;
 };
 
-class object {
-protected:
+
+
+class message {
+private:
 	position pos;
-	shape shape; 
-	COLOR color;
-public:
-	object(position initPos = { 0,0 }, ::shape initShape = shape::CIRCLE, COLOR initColor = YELLOW);
-public:
-	void SetPosition(const position& newPos);
-	void SetColor(COLOR color);
-	auto GetPosition() const -> const position&;
-	auto GetShape() const -> const ::shape&; 
-public:
-	virtual void Draw() = 0;
-};
-
-class movable :public object {
-protected:
-	direction dir;
-	int speed;
-public:
-	movable(position initPos = { 0,0 }, ::shape initShape = shape::CIRCLE, COLOR initColor = YELLOW, direction initDir = direction::NORTH, int initSpd = 1);
-public:
-	void Move(const direction& facing);
-	void SetDirection(direction newDir);
-	void SetSpeed(int newSpd);
-};
-
-class message : public object {
-public:
 	string text;
 	font msgType;
 	int fontSize;
@@ -84,6 +61,9 @@ public:
 public:
 	message(string s, position pos = { 0,0 }, font type = font::TEXT);
 public:
-	void Draw() override;
+	void Draw();
+	auto GetText() const -> const string&;
+	auto GetPosition() const -> const position&;
+public:
 	const message& operator=(const message& other);
 };

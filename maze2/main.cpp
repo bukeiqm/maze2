@@ -24,7 +24,8 @@ void SelectMap();
 void Play();
 void Hint();
 
-vector<vector<int>> maze = {
+//初始地图
+vector<vector<int>> maze1 = {
  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
  {1, 2, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1},
  {1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1},
@@ -62,6 +63,12 @@ vector<vector<int>> maze2 = {
  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
+struct GameConfig {
+	int mapSelect = 0;
+	bool fogMode = false;
+};
+GameConfig config;
+
 int main()
 {
 	srand(time(0));
@@ -83,220 +90,201 @@ int main()
 	return 0;
 }
 
+// 通用菜单选择函数：返回用户选择的索引（-1表示返回）
+int ShowSelectionMenu(const string& title, const vector<string>& options, int which) {
+	vector<message> msgs;
+	for (int i = 0; i < options.size(); ++i) {
+		msgs.emplace_back(options[i], position{ 300, 150 + i * 30 }, font::OPTION);
+	}
+	ui cur(msgs);
+	cur.AddTitle(message(title, position{ 250, 120 }, font::OPTION));
 
+	int returnValue = -1;
+	// 循环显示菜单，处理用户输入
+
+	string currentValue = msgs[which].GetText();
+
+	int option = which;
+
+	while (true) {
+		cleardevice();
+		cur.Draw();
+		Hint();
+		// 显示当前选中值（如"当前地图: map0"）
+		if (!currentValue.empty()) {
+			message currentMsg(currentValue, position{ 360, 120 }, font::OPTION);
+			currentMsg.Draw();
+		}
+		FlushBatchDraw();
+
+		// 确认选择
+		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
+			option = cur.Which();
+			returnValue = option;
+			currentValue = msgs[option].GetText();
+		}
+		// 返回上一级
+		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(VK_BACK)) {
+			break;
+		}
+		// 上下键切换
+		if (GetAsyncKeyState(VK_UP)) cur.CursorUp();
+		if (GetAsyncKeyState(VK_DOWN)) cur.CursorDown();
+		Sleep(100);
+	}
+
+	return returnValue;
+}
 
 void Hello() {
-	message msg("Start Game", { 270, 150 }, font::OPTION), msg2("Settings", { 270, 180 }, font::OPTION),
-		msg3("Select Map", { 270, 210, }, font::OPTION);
-
-	vector<message> msgs;
-	msgs.push_back(msg);
-	msgs.push_back(msg2);
-	msgs.push_back(msg3);
+	vector<message> msgs = {
+		message("Start Game", {270, 150}, font::OPTION),
+		message("Settings", {270, 180}, font::OPTION),
+		message("Select Map", {270, 210}, font::OPTION)
+	};
 	ui cur(msgs);
 	cur.AddTitle(message("Maze Game", { 230, 90 }, font::TITLE));
+
 	while (true) {
 		cleardevice();
 		Hint();
 		cur.Draw();
 		FlushBatchDraw();
-		int option = cur.WhichOption();
+
+		int option = cur.Which();
 		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
 			switch (option) {
-			case 0:Play(); break;
-			case 1:SelectMode(); break;
-			case 2:SelectMap(); break;
+			case 0:Sleep(100); Play(); break;
+			case 1:Sleep(100); SelectMode(); break;
+			case 2:Sleep(100); SelectMap(); break;
 			}
 		}
 		if (GetAsyncKeyState(VK_ESCAPE)) exit(0);
-		if (GetAsyncKeyState(VK_UP)) {
-			cur.CursorUp();
-		}
-
-		if (GetAsyncKeyState(VK_DOWN)) {
-			cur.CursorDown();
-		}
+		if (GetAsyncKeyState(VK_UP)) cur.CursorUp();
+		if (GetAsyncKeyState(VK_DOWN)) cur.CursorDown();
 		Sleep(100);
 	}
 }
 	
 void SelectMode() {
-	Sleep(100);
-	message msg("On", { 300, 150 }, font::OPTION), msg2("Off", { 300, 180 }, font::OPTION);
+	vector<string> options = { "On", "Off" };
+	int res = ShowSelectionMenu("Fog Mode:", options,config.fogMode == false ? 1 : 0);//, config.fogMode ? "On" : "Off"
+	if (res != -1) config.fogMode = (res == 0);
+}
 
-	vector<message> msgs;
-	msgs.push_back(msg);
-	msgs.push_back(msg2);
-	ui cur(msgs);
-	cur.AddTitle(message("Fog Mode:", { 250, 120 }, font::OPTION));
-	while (true) {
-		cleardevice();
-		cur.Draw();
-		Hint();
-
-		if (fogMode) {
-			message msg1("On", { 360,120 },font::OPTION);
-			msg1.Draw();
-		}
-		else {
-			message msg1("Off", { 360,120 },font::OPTION);
-			msg1.Draw();
-		}
-
-		FlushBatchDraw();
-		int option = cur.WhichOption();
-		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
-			switch (option) {
-			case 0:fogMode = true; break;
-			case 1:fogMode = false; break;
-			}
-		}
-
-		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(VK_BACK)) return;
-
-		if (GetAsyncKeyState(VK_UP)) {
-			cur.CursorUp();
-		}
-
-		if (GetAsyncKeyState(VK_DOWN)) {
-			cur.CursorDown();
-		}
-		Sleep(100);
-	}
+void SelectMap() {
+	vector<string> options = { "m1", "m2", "m3" };
+	int res = ShowSelectionMenu("Map :", options, config.mapSelect);//, "map" + to_string(config.mapSelect)
+	if (res != -1) config.mapSelect = res;
 }
 
 
-	void SelectMap() {
-	Sleep(100);
-	message msg("m1", { 300, 150 }, font::OPTION), msg2("m2", { 300, 180 }, font::OPTION), msg3("m3", { 300, 210 }, font::OPTION);
-
-	vector<message> msgs;
-	msgs.push_back(msg);
-	msgs.push_back(msg2);
-	msgs.push_back(msg3);
-	ui cur(msgs);
-	cur.AddTitle(message("Map :", { 240, 120 }, font::OPTION));
-	while (true) {
-		cleardevice();
-		cur.Draw();
-		Hint();
-
-		message msg("map" + to_string(mapSelect), { 330,120 }, font::OPTION);
-		msg.Draw();
-
-		FlushBatchDraw();
-		int option = cur.WhichOption();
-		if (GetAsyncKeyState(VK_SPACE) || GetAsyncKeyState(VK_RETURN)) {
-			switch (option) {
-			case 0:mapSelect = 0; break;
-			case 1:mapSelect = 1; break;
-			case 2:mapSelect = 2; break;
-			}
-		}
-
-		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(VK_BACK)) return;
-
-		if (GetAsyncKeyState(VK_UP)) {
-			cur.CursorUp();
-		}
-
-		if (GetAsyncKeyState(VK_DOWN)) {
-			cur.CursorDown();
-		}
-		Sleep(100);
-	}
+// 初始化陷阱
+vector<trap> InitTraps() {
+	vector<trap> traps;
+	traps.emplace_back(100, 30);
+	traps.emplace_back(120, 20);
+	traps.emplace_back(50, 30);
+	traps.emplace_back(80, 20);
+	return traps;
 }
 
+// 处理玩家输入
+void HandlePlayerInput(player& p) {
+	if (GetAsyncKeyState('A')) p.SetDirection(direction::WEST);
+	if (GetAsyncKeyState('D')) p.SetDirection(direction::EAST);
+	if (GetAsyncKeyState('W')) p.SetDirection(direction::NORTH);
+	if (GetAsyncKeyState('S')) p.SetDirection(direction::SOUTH);
+}
 
-
+// 检查游戏状态（胜利/失败）
+bool CheckGameState(const player& p, const map& realMap, bool& gameOver) {
+	if (p.GetPosition() == realMap.GetDestination()) {
+		message gameWin("Game Win", { 240, 150 }, font::TITLE);
+		gameWin.Draw();
+		gameOver = true;
+		return true;
+	}
+	if (p.GetHealth() <= 0) {
+		message gameLose("Game Lost", { 240, 150 }, font::ALARM);
+		gameLose.Draw();
+		gameOver = true;
+		return true;
+	}
+	return false;
+}
 
 void Play() {
 	player p1;
-
-
-	map realMap(maze);
-
-	switch (mapSelect) {
-	case 0:realMap.SetMap(maze); break;
-	case 1:realMap.SetMap(maze2); break;
-	case 2:realMap.SetMap(GenerateRandomMap(64, 40)); break;
+	map realMap(maze1);
+	// 设置地图
+	switch (config.mapSelect) {
+	case 0: realMap.SetMap(maze1); break;
+	case 1: realMap.SetMap(maze2); break;
+	case 2: realMap.SetMap(GenerateRandomMap(64, 40)); break;
 	}
-
-	vector<trap> traps;
-
-	trap trap1(100, 30), trap2(120, 20), trap3(50, 30);
-
-	traps.emplace_back(trap1); traps.emplace_back(trap2); traps.emplace_back(trap3);
-
-	traps.emplace_back(trap(80, 20));
-
-	p1.SetPosition(realMap.GetStart());
+	p1.SetPosition(realMap.GetStartPoint());
+	auto traps = InitTraps();
+	int timer = 50;
+	bool gameOver = false;
 
 	while (true) {
 		Sleep(100);
-		if (GetAsyncKeyState('A')) {
-			p1.SetDirection(direction::WEST);
-			if (!p1.IsJammed(realMap))
-				p1.Move(direction::WEST);
-		}
-		if (GetAsyncKeyState('D')) {
-			p1.SetDirection(direction::EAST);
-			if (!p1.IsJammed(realMap))
-				p1.Move(direction::EAST);
-		}
-		if (GetAsyncKeyState('W')) {
-			p1.SetDirection(direction::NORTH);
-			if (!p1.IsJammed(realMap))
-				p1.Move(direction::NORTH);
-		}
-		if (GetAsyncKeyState('S')) {
-			p1.SetDirection(direction::SOUTH);
-			if (!p1.IsJammed(realMap))
-				p1.Move(direction::SOUTH);;
-		}
-
 		if (GetAsyncKeyState(VK_ESCAPE)) exit(0);
-
 		if (GetAsyncKeyState(VK_BACK)) return;
+		if (!gameOver) HandlePlayerInput(p1);
 
-		if (GetAsyncKeyState('X'))
-		{
-			cout << "Player currently at:" << p1.GetPosition().x << "," << p1.GetPosition().y << endl;
+		// 移动逻辑（撞墙不移动）
+		if (!gameOver && !realMap.IsWall(p1.GetPosition().Offset(p1.GetDirection()))) {
+			p1.Move();
 		}
 
+		// 调试信息输出
+		if (GetAsyncKeyState('X')) {
+			cout << "Player at: " << p1.GetPosition().x << "," << p1.GetPosition().y << endl;
+		}
 		if (GetAsyncKeyState('B')) {
-			cout << "Destination at:" << realMap.GetDestination().x << "," << realMap.GetDestination().y << endl;
+			cout << "Destination at: " << realMap.GetDestination().x << "," << realMap.GetDestination().y << endl;
 		}
 
 		realMap.UpdateCharted(p1.GetPosition());
-
-
-
 		cleardevice();
-		for (trap& i : traps) {
-			i.DoDamageTo(p1);
-			i.Move(realMap, p1);
-			i.Revive();
-			i.Draw();
-		}
 
-		realMap.Draw(fogMode);
-		p1.Draw();
-		setfillcolor(WHITE);
-		fillrectangle(640, 0, 650, 400);
-		outtextxy(660, 90, ("Health:" + to_string(p1.GetHealth())).c_str());
-		if (p1.AtDest(realMap)) {
-			p1.SetSpeed(0);
-			message gameWin("Game Win", { 240, 150 }, font::TITLE);
-			gameWin.Draw();
-		}
-		if (p1.GetHealth() <= 0) {
-			p1.SetSpeed(0);
-			message gameLose("Game Lost", { 240,150 }, font::ALARM);
-			gameLose.Draw();
-		}
+		p1.SetDirection(direction::NONE); // 重置方向
 
+		// 陷阱逻辑
 		
+		
+	for (auto& t : traps) {
+		if (t.GetDuration() <= 0) {
+			t.SetDurationDiff(t.GetDuration() > -100 ? -1 : 200);
+		}
+		if (!t.IsValid()) continue;
+		if (t.GetPosition() == p1.GetPosition()) {
+			p1.SetHealthDiff(-t.GetDamage());
+			t.SetValidity(false);
+		}
+		if (!gameOver && timer-- == 10) {
+			timer = 50;
+			// 随机位置刷新陷阱（简化逻辑）
+			position mapSize = realMap.GetSize();
+			int x = rand() % mapSize.x, y = rand() % mapSize.y;
+			if (!realMap.IsWall({ x, y }) && !realMap.IsDestination({ x, y }) && p1.GetPosition() != position{ x, y }) {
+				t.SetPosition({ x, y });
+				t.SetDurationDiff(-1);
+			}
+		}
+		t.Draw();
+	}
+		
+		// 绘制地图和玩家
+		realMap.Draw(config.fogMode);
+		p1.Draw();
+		fillrectangle(640, 0, 650, 400); // 分隔线
+		outtextxy(660, 90, ("Health:" + to_string(p1.GetHealth())).c_str());
+
+		// 检查游戏状态
+		CheckGameState(p1, realMap, gameOver);
 		FlushBatchDraw();
 	}
 }

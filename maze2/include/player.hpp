@@ -1,6 +1,6 @@
 #pragma once
-#include "types.hpp"
-#include "map.hpp"
+#include "object.hpp"
+
 class player :public movable {
 private:
 	int health;
@@ -8,8 +8,7 @@ private:
 public:
 	player(position initPos = { 0,0 });
 public:
-	bool IsJammed(const map& map);
-	bool AtDest(const map& map);
-	int GetHealth();
+	int GetHealth() const;
+	void SetHealthDiff(int diff);
 	void Draw() override;
 };

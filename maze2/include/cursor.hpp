@@ -1,5 +1,5 @@
 #pragma once
-#include "types.hpp"
+#include "object.hpp"
 class cursor :public object {
 private:
 	const vector<message> &options;
@@ -8,8 +8,6 @@ private:
 public:
 	cursor(const vector<message>& initMsg, int index = 0);
 public:
-	void SetCursorPos(int x, int y);
-	void SetCursorPos(position pos);
 	void CursorUp(int step = 1);
 	void CursorDown(int step = 1);
 	auto Which() -> int;
@@ -18,21 +16,14 @@ public:
 
 
 
-class ui : protected cursor{
+class ui : public cursor{
 private:
 	vector<message> msgs;
 	message title;
 public:
 	ui(const vector<message>& initMsgs);
 public:
-	void AppendBar(message msg);
-	void AppendBar(position pos, string text);
-	void AppendBar(int x, int y, string text);
-	void AppendBar(string text, font txtType);
 	void AddTitle(const message& title);
-	void CursorUp();
-	void CursorDown();
-	auto WhichOption() -> int;
 	void Draw() override;
 };
 

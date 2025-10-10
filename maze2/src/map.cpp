@@ -4,14 +4,14 @@ map::map(const vector<vector<int>>& matrix) {
 	SetMap(matrix);
 }
 
-bool map::IsPathway(int x, int y) const {
-	if (x < 0 || x >= n) return false;
-	if (y < 0 || y >= m) return false;
-	return mat[y][x] != 1;
+bool map::IsWall(int x, int y) const {
+	if (x < 0 || x >= n) return true;
+	if (y < 0 || y >= m) return true;
+	return mat[y][x] == 1;
 }
 
-bool map::IsPathway(position pos) const {
-	return IsPathway(pos.x, pos.y);
+bool map::IsWall(position pos) const {
+	return IsWall(pos.x, pos.y);
 }
 
 bool map::IsDestination(int x, int y) const {
@@ -24,7 +24,7 @@ bool map::IsDestination(position pos) const {
 	return IsDestination(pos.x, pos.y);
 }
 
-auto map::GetStart() const -> const position& {
+auto map::GetStartPoint() const -> const position& {
 	return startPoint;
 }
 
@@ -66,7 +66,7 @@ void map::Draw(bool isFogMode) {
 				setlinecolor(LIGHTGRAY);
 				setfillcolor(LIGHTGRAY);
 			}
-			if (permitted == true && IsPathway(i, j)) {
+			if (permitted == true && IsWall(i, j) == false) {
 				continue;
 			}
 			fillrectangle(posAnchor + i * scaleFactor - rectSize,
@@ -102,7 +102,7 @@ position map::GetSize() {
 	return { n,m };
 }
 
-void map::SetStart(position start) {
+void map::SetStartPoint(position start) {
 	startPoint = start;
 }
 

@@ -1,7 +1,5 @@
 #pragma once
-#include "types.hpp"
-#include "map.hpp"
-#include "player.hpp"
+#include "object.hpp"
 class trap: public object {
 private:
 	int damage;
@@ -11,10 +9,12 @@ public:
 	trap(position initPos, int duration = 100, int damage = 50);
 	trap(int duration = 100, int damage = 50);
 public:
-	void DoDamageTo(player& player);
-	void Mute();
-	void Move(map m1,player p1);
-	void Draw();
-	void Revive();
+	int GetDamage() const;
+	int GetDuration() const;
+	void SetValidity(bool valid);
+	void SetDuration(int duration);
+	void SetDurationDiff(int diff);
+	bool IsValid() const;
+	void Draw() override;
 };
 

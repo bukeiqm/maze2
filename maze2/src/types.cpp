@@ -1,88 +1,29 @@
 #include "types.hpp"
 
-auto position::Offset(direction dir, int step) -> const position& {
-	int xp = x, yp = y;
+auto position::Offset(direction dir, int step) const -> const position& {
 	switch (dir) {
-	case direction::NORTH:yp -= step; break;
-	case direction::EAST:xp += step; break;
-	case direction::SOUTH:yp += step; break;
-	case direction::WEST:xp -= step; break;
+	case direction::NORTH:return position(x, y - step);
+	case direction::EAST:return position(x + step, y);
+	case direction::SOUTH:return position(x, y + step);
+	case direction::WEST:return position(x - step, y);
+	default:return position(x, y);
 	}
-	return position(xp, yp);
 }
 
 bool position::operator==(const position& other) const {
 	return x == other.x && y == other.y;
 }
 
-position& position::operator=(const position& other)  {
-	x = other.x;
-	y = other.y;
+auto position::operator=(const position& other) -> position& {
+	x = other.x;y = other.y;
 	return *this;
 }
 
-object::object(position initPos, ::shape initShape, COLOR initColor) :pos(initPos), shape(initShape), color(initColor) {
-
-}
-
-void object::SetPosition(const position& newPos) {
-	pos = newPos;
-}
-
-void object::SetColor(COLOR newColor) {
-	color = newColor;
-}
-
-auto object::GetPosition() const -> const position& {
+const position& message::GetPosition() const {
 	return pos;
 }
 
-auto object::GetShape() const -> const ::shape& {
-	return shape;
-}
-
-void object::Draw() {
-	
-
-	int x = pos.x;
-	int y = pos.y;
-
-	setfillcolor(color);
-	switch (shape) {
-	case shape::CIRCLE:
-		fillcircle(posAnchor + x * scaleFactor, posAnchor + y * scaleFactor, rectSize);
-		break;
-	case shape::RECT:
-		fillrectangle(posAnchor + x * scaleFactor - rectSize,
-			posAnchor + y * scaleFactor - rectSize,
-			posAnchor + x * scaleFactor + rectSize,
-			posAnchor + y * scaleFactor + rectSize);
-		break;
-	case shape::CURSOR:
-		fillcircle(x - blockSize * 2, y + 12, rectSize);
-		break;
-	default:
-		break;
-	}
-}
-
-movable::movable(position initPos, ::shape initShape, COLOR initColor, direction initDir, int initSpd) :object(initPos, initShape, initColor), dir(initDir), speed(initSpd) {
-
-}
-
-void movable::Move(const direction& facing) {
-	pos = pos.Offset(facing, speed);
-}
-
-void movable::SetDirection(direction newDir) {
-	dir = newDir;
-}
-
-void movable::SetSpeed(int newSpeed) {
-	speed = newSpeed;
-}
-
-message::message(string s, position pos, font type) :object(pos), text(s), msgType(type) {
+message::message(string s, position pos, font type) :pos(pos), text(s), msgType(type) {
 	switch (type) {
 	case font::OPTION:
 		fontSize = 24; fontStyle = "Candara"; break;
@@ -116,6 +57,10 @@ void message::Draw() {
 	outtextxy(x , y , text.c_str());
 	settextcolor(currentColor);
 	settextstyle(&currentFont);
+}
+
+auto message::GetText() const -> const string& {
+	return text;
 }
 
 const message& message::operator=(const message& other) {
